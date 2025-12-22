@@ -1,0 +1,6 @@
+SevenSeg    KEYWORD1
+begin    KEYWORD2
+clearDisplay    KEYWORD2
+writeDigit    KEYWORD2
+writeChar    KEYWORD2
+writeDP    KEYWORD2
