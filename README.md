@@ -9,7 +9,9 @@ A lightweight library for controlling 1-digit 7-segment LED displays. It support
 2. Drop `Sevenseg.h` and `Sevenseg.cpp` into that folder.
 3. Restart your Arduino IDE.
 
-ORnl1. Download this repository as a zip folder.b2. From the Arduino IDE, select `Include Library` and select the downloaded zip folder.
+OR
+1. Download this repository as a zip folder.
+2. From the Arduino IDE, select `Include Library` and select the downloaded zip folder.
 
 ## Segment Mapping
 
