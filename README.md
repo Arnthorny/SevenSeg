@@ -1,6 +1,3 @@
-This code is a functional but basic driver for a common-cathode 7-segment display. Below is a blunt, professional `README.md` designed to get a user up and running without any fluff.
-
----
 
 # SevenSeg Arduino Library
 
