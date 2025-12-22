@@ -1,310 +1,79 @@
 #include "Sevenseg.h"
-#include "Arduino.h"
 
-SevenSeg::SevenSeg(int segments[], int size) {
+SevenSeg::SevenSeg(int segments[], int size, uint8_t type) {
     segArr = segments;
     segArrSize = size;
-
+    _type = type;
 }
 
 void SevenSeg::begin() {
-    for(int i = 0; i < segArrSize; i++) {
-        pinMode(segArr[i], OUTPUT);
-    }
-
-}
-
-void SevenSeg::clearDisplay() {
-    for(int i = 0; i < segArrSize; i++) {
-        digitalWrite(segArr[i], LOW);
-    }
-}
-void SevenSeg::writeDP() {
-    digitalWrite(segArr[7], HIGH);
-}
- 
-void SevenSeg::writeDigit(int num) {
+    for(int i = 0; i < segArrSize; i++) pinMode(segArr[i], OUTPUT);
     clearDisplay();
-    switch (num) {
-        case 1:
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            break;
-        case 2:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[4], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-        case 3:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-        case 4:
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            break;
-        case 5:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-        case 6:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            digitalWrite(segArr[4], HIGH);
- 
-            break;
-        case 7:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH); 
-            break;
-        case 8:
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-        case 9:
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH);  
-            digitalWrite(segArr[3], HIGH);
-           break; 
-        case 0:
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH);
-           break;
-        default:
-           digitalWrite(segArr[6], HIGH); 
+}
+
+void SevenSeg::__digitalWrite(uint8_t pin, uint8_t val) {
+    if (_type == COMMON_CATHODE) {
+        digitalWrite(pin, val);
     }
+    // Invert logic for common anode
+    else {
+        digitalWrite(pin, !val);
+    }
+}
+
+void SevenSeg::displayMask(byte mask) {
+    for (int i = 0; i < 7; i++) {
+        __digitalWrite(segArr[i], (mask >> i) & 0x01);
+    }
+}
+
+// Bit patterns for 0-9 (LSB = segment a, Bit 6 = segment g)
+void SevenSeg::writeDigit(int num) {
+    const byte digits[] = {
+        0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F
+    };
+    
+    if (num >= 0 && num <= 9) displayMask(digits[num]);
+    else __digitalWrite(segArr[6], HIGH); // Error dash
 }
 
 void SevenSeg::writeChar(char c) {
-    clearDisplay();
-    switch (c) {
-        case 'a':
-        case 'A':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-        
-        case 'B':
-        case 'b':
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-
-        case 'c':
-        case 'C':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH);
-           break;
-        
-        case 'D':
-        case 'd':
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[6], HIGH);
-           break;
-
-         case 'e':
-         case 'E':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-
-         case 'f':
-         case 'F':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH);
-           break;
-        
-        case 'G':
-        case 'g':
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH);  
-            digitalWrite(segArr[3], HIGH);
-           break; 
- 
-         case 'H':
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-
-
-        case 'h':
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-
-        case 'i':
-        case 'I':
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           break;
-
-        case 'j':
-        case 'J':
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-
-        case 'l':
-        case 'L':
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           break;
-
-        case 'n':
-        case 'N':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           break;
-
-        case 'O':
-        case 'o':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[3], HIGH); 
-           break;
-
-        case 'p':
-        case 'P':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[6], HIGH); 
-           break;
-        
-        case 'R':
-        case 'r':
-           digitalWrite(segArr[0], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           break;
-
-        case 's':
-        case 'S':
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[5], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[2], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-
-        case 'T':
-        case 't':
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH);
-           digitalWrite(segArr[3], HIGH);
-           digitalWrite(segArr[6], HIGH);
-           break;
-
-        case 'u':
-        case 'U':
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[4], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[3], HIGH); 
-           break;
-
-        case 'Y':
-        case 'y':
-           digitalWrite(segArr[1], HIGH);
-           digitalWrite(segArr[2], HIGH);
-           digitalWrite(segArr[6], HIGH);
-           digitalWrite(segArr[5], HIGH); 
-           digitalWrite(segArr[3], HIGH); 
-           break;
-
-        case 'z':
-        case 'Z':
-            digitalWrite(segArr[0], HIGH);
-            digitalWrite(segArr[1], HIGH);
-            digitalWrite(segArr[6], HIGH);
-            digitalWrite(segArr[4], HIGH);
-            digitalWrite(segArr[3], HIGH);
-            break;
-
-        case '-':
-           digitalWrite(segArr[6], HIGH); 
-           break;
-
-        case '_':
-           digitalWrite(segArr[3], HIGH); 
-           break;
-
-        case '.':
-           digitalWrite(segArr[7], HIGH); 
-           break;
-
-        case '\'':
-           digitalWrite(segArr[5], HIGH); 
-           break;
-
-
-        case ' ':
-           clearDisplay();
-           break;
-
-        default:
-           digitalWrite(segArr[6], HIGH); 
-
+    byte mask = 0;
+    switch (toupper(c)) {
+        case 'A': mask = 0x77; break;
+        case 'B': mask = 0x7C; break;
+        case 'C': mask = 0x39; break;
+        case 'D': mask = 0x5E; break;
+        case 'E': mask = 0x79; break;
+        case 'F': mask = 0x71; break;
+        case 'G': mask = 0x6F; break;
+        case 'H': mask = 0x76; break;
+        case 'I': mask = 0x30; break;
+        case 'J': mask = 0x0E; break;
+        case 'L': mask = 0x38; break;
+        case 'N': mask = 0x37; break;
+        case 'O': mask = 0x3F; break;
+        case 'P': mask = 0x73; break;
+        case 'R': mask = 0x31; break;
+        case 'S': mask = 0x6D; break;
+        case 'T': mask = 0x78; break;
+        case 'U': mask = 0x3E; break;
+        case 'Y': mask = 0x6E; break;
+        case 'Z': mask = 0x5B; break;
+        case '-': mask = 0x40; break;
+        case '_': mask = 0x08; break;
+        case '.': mask = 0x80; break;
+        case '\'': mask = 0x20; break;
+        case ' ': mask = 0x00; break;
+        default:  mask = 0x40; break;
     }
+    displayMask(mask);
+}
+
+void SevenSeg::clearDisplay() {
+    for(int i = 0; i < segArrSize; i++) __digitalWrite(segArr[i], LOW);
+}
+
+void SevenSeg::writeDP() {
+    if (segArrSize > 7) __digitalWrite(segArr[7], HIGH);
 }

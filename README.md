@@ -39,7 +39,7 @@ Define your pins and pass them to the constructor. You must call `.begin()` in `
 
 // Define pins for segments a, b, c, d, e, f, g, dp
 int displayPins[] = {2, 3, 4, 5, 6, 7, 8, 9}; 
-SevenSeg myDisplay(displayPins, 8);
+SevenSeg myDisplay(displayPins, 8, COMMON_CATHODE); // Use COMMON_ANODE if this is your 7-segment type
 
 void setup() {
     myDisplay.begin();
@@ -70,7 +70,4 @@ void loop() {
 * **Letters:** `A, B, C, D, E, F, G, H, I, J, L, N, O, P, R, S, T, U, Y, Z` (Case-insensitive where applicable)
 * **Symbols:** `-` (dash), `_` (underscore), `.` (period), `'` (apostrophe), `     ` (space)
 
-## Hardware Note
-
-This library is written for **Common Cathode** displays (segments turn on when the pin is `HIGH`). If you are using a **Common Anode** display, you will need to modify the `digitalWrite` calls in the `.cpp` file to `LOW` and the `clearDisplay` logic to `HIGH`.
 
