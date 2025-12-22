@@ -16,8 +16,8 @@
 
 int pins[8] = {2, 3, 4, 5, 6, 7, 8, 9};
 
-// SevenSeg::SevenSeg(segPinsArr, arrSize);
-SevenSeg seg(pins, 8);
+// SevenSeg::SevenSeg(segPinsArr, arrSize, type);
+SevenSeg seg(pins, 8, COMMON_CATHODE); // Use COMMON_ANODE if this is your 7-segment type
 
 void setup() {
   // Initialize pins
