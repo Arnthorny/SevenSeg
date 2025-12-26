@@ -1,16 +1,17 @@
-This code is a functional but basic driver for a common-cathode 7-segment display. Below is a blunt, professional `README.md` designed to get a user up and running without any fluff.
-
----
 
 # SevenSeg Arduino Library
 
-A lightweight, no-nonsense library for controlling 1-digit 7-segment LED displays. It supports digits (0-9), a limited set of alphanumeric characters, and basic punctuation.
+A lightweight library for controlling 1-digit 7-segment LED displays. It supports digits (0-9), a limited set of alphanumeric characters, and a tiny amount of punctuation.
 
 ## Installation
 
 1. Create a folder named `Sevenseg` in your Arduino `libraries` directory.
 2. Drop `Sevenseg.h` and `Sevenseg.cpp` into that folder.
 3. Restart your Arduino IDE.
+
+OR
+1. Download this repository as a zip folder.
+2. From the Arduino IDE, select `Include Library` and select the downloaded zip folder.
 
 ## Segment Mapping
 
