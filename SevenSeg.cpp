@@ -65,6 +65,7 @@ void SevenSeg::writeChar(char c) {
         case '.': mask = 0x80; break;
         case '\'': mask = 0x20; break;
         case ' ': mask = 0x00; break;
+        case '.': mask = 0x80; break;
         default:  mask = 0x40; break;
     }
     displayMask(mask);
